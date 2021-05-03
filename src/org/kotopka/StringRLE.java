@@ -65,7 +65,7 @@ public class StringRLE {
                 }
             }
 
-            // write last byte of "count"
+            // write remaining portion of "count"
             writer.write(String.valueOf(count));
 
         } catch (IOException e) {
