@@ -38,10 +38,9 @@ public class StringRLE {
              PrintWriter writer = new PrintWriter(outputFilename)) {
 
             int character;
-            int streak = 0;
+            int count = 0;
             boolean isZero = true;
-            boolean appendStringBuilder = false;
-            StringBuilder sb = new StringBuilder();
+            boolean writeBitCount = false;
 
             System.out.println("Compressing " + inputFilename + " to file: " + outputFilename);
 
@@ -49,28 +48,25 @@ public class StringRLE {
                 System.out.println(byteToBitString(character));
 
                 for (int bitMask = 1 << 7; bitMask > 0 ; bitMask >>= 1) {
-                    if (isZero) {
-                        if ((character & bitMask) == 0) streak++;
-                        else appendStringBuilder = true;
+                    if ((character & bitMask) == 0) {
+                        if (!isZero) writeBitCount = true;
                     } else {
-                        if ((character & bitMask) != 0) streak++;
-                        else appendStringBuilder = true;
+                        if (isZero) writeBitCount = true;
                     }
 
-                    if (appendStringBuilder) {
-                        sb.append(streak).append(" ");
+                    if (writeBitCount) {
+                        writer.write(count + " ");
                         isZero = !isZero;
-                        appendStringBuilder = false;
-                        streak = 1;
+                        writeBitCount = false;
+                        count = 0;
                     }
 
+                    count++;
                 }
             }
 
-            // capture last streak?
-            sb.append(streak).append(" ");
-
-            writer.write(sb.toString().trim());
+            // write last byte of "count"
+            writer.write(String.valueOf(count));
 
         } catch (IOException e) {
             e.printStackTrace();
