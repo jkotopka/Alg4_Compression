@@ -40,6 +40,7 @@ public class StringRLE {
             int character;
             int streak = 0;
             boolean isZero = true;
+            boolean appendStringBuilder = false;
             StringBuilder sb = new StringBuilder();
 
             System.out.println("Compressing " + inputFilename + " to file: " + outputFilename);
@@ -48,23 +49,19 @@ public class StringRLE {
                 System.out.println(byteToBitString(character));
 
                 for (int bitMask = 1 << 7; bitMask > 0 ; bitMask >>= 1) {
-
                     if (isZero) {
-                        if ((character & bitMask) == 0) {
-                            streak++;
-                        } else {
-                            sb.append(streak).append(" ");
-                            isZero = false;
-                            streak = 1;
-                        }
+                        if ((character & bitMask) == 0) streak++;
+                        else appendStringBuilder = true;
                     } else {
-                        if ((character & bitMask) != 0) {
-                            streak++;
-                        } else {
-                            sb.append(streak).append(" ");
-                            isZero = true;
-                            streak = 1;
-                        }
+                        if ((character & bitMask) != 0) streak++;
+                        else appendStringBuilder = true;
+                    }
+
+                    if (appendStringBuilder) {
+                        sb.append(streak).append(" ");
+                        isZero = !isZero;
+                        appendStringBuilder = false;
+                        streak = 1;
                     }
 
                 }
