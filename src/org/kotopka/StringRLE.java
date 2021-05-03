@@ -144,16 +144,13 @@ public class StringRLE {
         if (byteVal > 255) throw new IllegalArgumentException("Invalid byte value: " + byteVal);
 
         StringBuilder bitString = new StringBuilder();
-        int bitMask = 1 << 7;
 
-        while (bitMask != 0) {
+        for (int bitMask = 1 << 7; bitMask > 0; bitMask >>= 1) {
             if ((byteVal & bitMask) == 0) {
                 bitString.append(0);
             } else {
                 bitString.append(1);
             }
-
-            bitMask >>= 1;
         }
 
         return bitString.toString();
