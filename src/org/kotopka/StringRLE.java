@@ -84,6 +84,7 @@ public class StringRLE {
 
             System.out.println("Expanding file " + inputFilename + " to file: " + outputFilename);
 
+            // build the String of 0s and 1s
             for (int i = 0; i < fileContents.length; i++) {
                 int count = Integer.parseInt(fileContents[i]);
                 int current;
@@ -101,17 +102,15 @@ public class StringRLE {
             }
 
             String s = sb.toString().trim();
-            int c = 0;
-            byte b;
 
-            while (c + 8 <= s.length()) {
+            // write the parsed 0s and 1s to file
+            for (int c = 0; c + 8 <= s.length(); c += 8) {
                 String temp = s.substring(c, c + 8);
 
                 System.out.println(temp);
 
-                b = (byte) (Integer.parseInt(temp, 2) & 0xff);
+                byte b = (byte) (Integer.parseInt(temp, 2) & 0xff);
                 outputStream.write(b);
-                c += 8;
             }
 
         } catch (IOException e) {
