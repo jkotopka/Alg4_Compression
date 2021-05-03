@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * {@code RLE} - Basic Run-Length Encoding.
+ * {@code StringRLE} - Basic Run-Length Encoding.
  * <br><br>
  * NOT intended as an actual compression scheme, instead this program
  * "compresses" a file to a human-readable text file containing integers separated by spaces. Each integer
@@ -21,7 +21,7 @@ import java.nio.file.Paths;
  * <br><br>
  * The idea here is NOT to be efficient but to be able to print out the binary representation of each step of the process.
  */
-public class RLE {
+public class StringRLE {
 
     private static final byte EOF = -1;
 
