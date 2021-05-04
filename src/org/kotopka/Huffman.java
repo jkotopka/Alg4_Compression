@@ -4,6 +4,11 @@ import edu.princeton.cs.algs4.BinaryStdIn;
 import edu.princeton.cs.algs4.BinaryStdOut;
 import edu.princeton.cs.algs4.MinPQ;
 
+/**
+ * {@code Huffman} - Implements Huffman coding, from
+ * <a href="https://algs4.cs.princeton.edu/home/">Algorithms 4th ed.</a>
+ * by Robert Sedgewick and Kevin Wayne
+ */
 public class Huffman {
 
     private static final int R = 256; // extended ASCII
