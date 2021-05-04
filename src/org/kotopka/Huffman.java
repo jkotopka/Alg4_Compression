@@ -1,8 +1,6 @@
 package org.kotopka;
 
-import edu.princeton.cs.algs4.BinaryStdIn;
-import edu.princeton.cs.algs4.BinaryStdOut;
-import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.*;
 
 /**
  * {@code Huffman} - Implements Huffman coding, from
@@ -75,57 +73,62 @@ public class Huffman {
         return pq.delMin();
     }
 
-    private static void writeTrie(Node x) {
+    private static void writeTrie(BinaryOut out, Node x) {
         // write bitstring-encoded trie
         if (x.isLeaf()) {
-            BinaryStdOut.write(true);
-            BinaryStdOut.write(x.ch, 8);
+            out.write(true);
+            out.write(x.ch, 8);
             return;
         }
 
-        BinaryStdOut.write(false);
-        writeTrie(x.left);
-        writeTrie(x.right);
+        out.write(false);
+        writeTrie(out, x.left);
+        writeTrie(out, x.right);
     }
 
-    private static Node readTrie() {
+    private static Node readTrie(BinaryIn in) {
         // reconstruct the trie from a preorder bitstream representation
-
-        if (BinaryStdIn.readBoolean()) {
-            return new Node(BinaryStdIn.readChar(), 0, null, null);
+        if (in.readBoolean()) {
+            return new Node(in.readChar(), 0, null, null);
         }
 
-        Node left = readTrie();
-        Node right = readTrie();
+        Node left = readTrie(in);
+        Node right = readTrie(in);
 
         return new Node('\0', 0, left, right);
     }
 
-    public static void expand() {
-        Node root = readTrie();
-        int n = BinaryStdIn.readInt();
+    public static void expand(String infile, String outfile) {
+        BinaryIn in = new BinaryIn(infile);
+        BinaryOut out = new BinaryOut(outfile);
+
+        Node root = readTrie(in);
+        int n = in.readInt();
 
         for (int i = 0; i < n; i++) {
             // expand ith codeword
             Node x = root;
 
             while (!x.isLeaf()) {
-                if (BinaryStdIn.readBoolean()) {
+                if (in.readBoolean()) {
                     x = x.right;
                 } else {
                     x = x.left;
                 }
             }
 
-            BinaryStdOut.write(x.ch, 8);
+            out.write(x.ch, 8);
         }
 
-        BinaryStdOut.close();
+        out.close();
     }
 
-    public static void compress() {
+    public static void compress(String infile, String outfile) {
+        BinaryIn in = new BinaryIn(infile);
+        BinaryOut out = new BinaryOut(outfile);
+
         // read input
-        String s = BinaryStdIn.readString();
+        String s = in.readString();
         char[] input = s.toCharArray();
 
         // tabulate frequency counts
@@ -143,10 +146,10 @@ public class Huffman {
         buildCode(st, root, "");
 
         // print trie for decoder
-        writeTrie(root);
+        writeTrie(out, root);
 
         // print number of chars
-        BinaryStdOut.write(input.length);
+        out.write(input.length);
 
         // use Huffman code to encode input
         for (int i = 0; i < input.length; i++) {
@@ -154,14 +157,33 @@ public class Huffman {
 
             for (int j = 0; j < code.length(); j++) {
                 if (code.charAt(j) == '1') {
-                    BinaryStdOut.write(true);
+                    out.write(true);
                 } else {
-                    BinaryStdOut.write(false);
+                    out.write(false);
                 }
             }
         }
 
-        BinaryStdOut.close();
+        out.close();
     }
 
+    public static void main(String[] args) {
+        if (args.length != 3) {
+            System.out.println("Usage: java Huffman infile <option> outfile");
+            System.out.println("options:");
+            System.out.println("  + compress file");
+            System.out.println("  - expand file");
+            System.exit(1);
+        }
+
+        String infile = args[0];
+        String option = args[1];
+        String outfile = args[2];
+
+        switch (option) {
+            case "-" -> compress(infile, outfile);
+            case "+" -> expand(infile, outfile);
+            default -> System.out.println("Invalid option: " + option);
+        }
+    }
 }
