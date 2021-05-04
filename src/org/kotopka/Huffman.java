@@ -171,8 +171,8 @@ public class Huffman {
         if (args.length != 3) {
             System.out.println("Usage: java Huffman infile <option> outfile");
             System.out.println("options:");
-            System.out.println("  + compress file");
-            System.out.println("  - expand file");
+            System.out.println("  - compress file");
+            System.out.println("  + expand file");
             System.exit(1);
         }
 
