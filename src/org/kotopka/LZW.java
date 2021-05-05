@@ -8,6 +8,10 @@ import edu.princeton.cs.algs4.TST;
  * {@code LZW} - Implementation of the Lempel-Ziv-Welch (LZW) compression algorithm
  * from <a href="https://algs4.cs.princeton.edu/home/">Algorithms 4th ed.</a>
  * by Robert Sedgewick and Kevin Wayne
+ * <br><br>
+ * Note: unfortunately, as of Oracle Java 7 update 6, the String.substring() method is O(n),
+ * instead of O(1) as it was previously. As a result, this algorithm is much less efficient
+ * than when it was written for the book.
  */
 public class LZW {
 
@@ -34,9 +38,6 @@ public class LZW {
                 st.put(input.substring(0, t + 1), code++); // add to symbol table
             }
 
-            // XXX: unfortunately, as of Oracle Java 7 update 6, the String.substring() method is O(n),
-            // instead of O(1) as it was previously. As a result, this algorithm is much less efficient
-            // than when it was written for the book.
             input = input.substring(t); // scan past s in input
         }
 
