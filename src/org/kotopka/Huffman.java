@@ -1,6 +1,8 @@
 package org.kotopka;
 
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.BinaryIn;
+import edu.princeton.cs.algs4.BinaryOut;
+import edu.princeton.cs.algs4.MinPQ;
 
 /**
  * {@code Huffman} - Implements Huffman coding, from
@@ -13,8 +15,8 @@ public class Huffman {
 
     private static class Node implements Comparable<Node> {
         // Huffman trie node
-        private char ch;
-        private int freq;
+        private final char ch;
+        private final int freq;
         private final Node left;
         private final Node right;
 
@@ -67,9 +69,12 @@ public class Huffman {
             Node x = pq.delMin();
             Node y = pq.delMin();
             Node parent = new Node('\0', x.freq + y.freq, x, y);
+
+            // re-insert new "parent" node with the new frequency priority
             pq.insert(parent);
         }
 
+        // return the root of the Huffman trie
         return pq.delMin();
     }
 
@@ -134,16 +139,15 @@ public class Huffman {
         // tabulate frequency counts
         int[] freq = new int[R];
 
-        for (int i = 0; i < input.length; i++) {
-            freq[input[i]]++;
+        for (char c : input) {
+            freq[c]++;
         }
 
         // build Huffman code trie
         Node root = buildTrie(freq);
 
         // build code table
-        String[] st = new String[R];
-        buildCode(st, root, "");
+        String[] st = buildCode(root);
 
         // print trie for decoder
         writeTrie(out, root);
@@ -152,15 +156,11 @@ public class Huffman {
         out.write(input.length);
 
         // use Huffman code to encode input
-        for (int i = 0; i < input.length; i++) {
-            String code = st[input[i]];
+        for (char c : input) {
+            String code = st[c];
 
             for (int j = 0; j < code.length(); j++) {
-                if (code.charAt(j) == '1') {
-                    out.write(true);
-                } else {
-                    out.write(false);
-                }
+                out.write(code.charAt(j) == '1');
             }
         }
 
