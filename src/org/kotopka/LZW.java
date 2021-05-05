@@ -44,4 +44,40 @@ public class LZW {
         BinaryStdOut.write(R, WIDTH);
         BinaryStdOut.close();
     }
+
+    public static void expand() {
+        String[] st = new String[L];
+
+        int i; // next available codeword value
+
+        for (i = 0; i < R; i++) {
+            st[i] = "" + (char) i; // initialize table for chars
+        }
+
+        st[i++] = " "; // (unused) lookahead for EOF
+
+        int codeword = BinaryStdIn.readInt(WIDTH);
+        String val = st[codeword];
+
+        while (true) {
+            BinaryStdOut.write(val); // write current substring
+            codeword = BinaryStdIn.readInt(WIDTH);
+
+            if (codeword == R) break;
+
+            String s = st[codeword];     // get next codeword
+
+            if (i == codeword) {         // if lookahead is invalid
+                s = val + val.charAt(0); // make codeword from last one
+            }
+            if (i < L) {
+                st[i++] = val + s.charAt(0); // add new entry to code table
+            }
+
+            val = s; // update current codeword
+        }
+
+        BinaryStdOut.close();
+    }
+
 }
